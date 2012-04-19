@@ -1,0 +1,7 @@
+libgpg-error-1.7-4.el6.x86_64
+libxml2-2.7.6-4.el6_2.4.x86_64
+python-libs-2.6.6-29.el6.x86_64
+libgcrypt-1.4.5-9.el6_2.2.x86_64
+glibc-2.12-1.47.el6_2.9.x86_64
+zlib-1.2.3-27.el6.x86_64
+libxslt-1.1.26-2.el6.x86_64
