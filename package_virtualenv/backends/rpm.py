@@ -4,6 +4,24 @@ from .. import utils
 from .. import ldd
 from subprocess import Popen, PIPE
 
+name_pat = re.compile(r"^Name\s+: ([\w_-]+)")
+
+def get_package_name(package_label):
+    p = Popen(["rpm", "-qi", package_label],
+              stdout=PIPE, stderr=PIPE)
+    returncode = p.wait()
+
+    if returncode:
+        raise Exception(p.stderr.read())
+    
+    content = p.stdout.read()
+
+    match = name_pat.match(content)
+    if match:
+        return match.group(1)
+    else:
+        raise Exception("Could not find name in 'rpm -qi %' output " % (package_label, ))
+    
 
 def find_packages(file_set):
     p = Popen(["rpm", "-qf"] + list(file_set),
@@ -18,7 +36,7 @@ def find_packages(file_set):
     for line in p.stdout:
         line = line.strip()
         if line:
-            result.add(line)
+            result.add(get_package_name(line))
     return result
 
 
@@ -54,23 +72,21 @@ def build_spec(virtualenv_root,
     lines.append(description)
 
 
+    rel_root = virtualenv_root[1:]
     lines.append("")
     lines.append("""%%build
-mkdir -p $RPM_BUILD_ROOT/opt/virtualenvs
-cp -r %(root)s $RPM_BUILD_ROOT/opt/virtualenvs/"""\
-                     % {"root": virtualenv_root})
+mkdir -p $RPM_BUILD_ROOT/%(rel_root)s
+cp -r %(root)s/* $RPM_BUILD_ROOT/%(rel_root)s/"""\
+                     % {"root": virtualenv_root,
+                        "rel_root": rel_root})
 
                  
     lines.append("")
     lines.append("%files")
 
-    root_pat = re.compile("^" + re.escape(virtualenv_root + "/"))
 
     for filename in files:
-        without_root = root_pat.sub("", filename)
-        arcroot = "/opt/virtualenvs/" + os.path.basename(virtualenv_root)
-        arcfile = os.path.join(arcroot , without_root)
-        lines.append(arcfile)
+        lines.append(filename)
 
     lines.append("")
 

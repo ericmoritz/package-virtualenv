@@ -15,16 +15,15 @@ class TestCollectFilenames(unittest.TestCase):
 
         def make_fixture(line):
             filename = line.strip()
-            if filename.startswith("/"):
-                return filename, filename
-            else:
-                return (os.path.join(root, filename),
-                        os.path.join("/virtualenvs/test-env", filename))
+            if not filename.startswith("/"):
+                filename = os.path.join(root, filename)
+            return filename, filename
 
         expected = set(imap(make_fixture,
                             fixtures.FILES | fixtures.LIBRARIES))
 
         result = set(zip.collect_filenames(root))
 
+        print expected - result
         self.assertEqual(expected, result)
 

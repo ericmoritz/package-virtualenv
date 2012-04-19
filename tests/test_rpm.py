@@ -6,6 +6,13 @@ from itertools import imap
 import fixtures
 
 
+class TestGetPackageName(unittest.TestCase):
+    def test(self):
+        expected = "iptables"
+        result = rpm.get_package_name("iptables-1.4.7-3.el6.x86_64")
+        self.assertEqual(expected, result)
+
+
 class TestFindPackages(unittest.TestCase):
 
     def test(self):
@@ -29,11 +36,11 @@ Requires: required-package, other-required-package
 A long description
 
 %build
-mkdir -p $RPM_BUILD_ROOT/opt/virtualenvs
-cp -r /tmp/test-env $RPM_BUILD_ROOT/opt/virtualenvs/
+mkdir -p $RPM_BUILD_ROOT/tmp/test-env
+cp -r /tmp/test-env/* $RPM_BUILD_ROOT/tmp/test-env/
 
 %files
-/opt/virtualenvs/test-env/foo
+/tmp/test-env/foo
 """
 
         result = rpm.build_spec("/tmp/test-env/",

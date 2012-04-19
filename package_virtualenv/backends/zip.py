@@ -8,13 +8,10 @@ import re
 def collect_filenames(root):
     if root.endswith("/"): root = root[:-1]
     name = os.path.basename(root)
-    root_pat = re.compile("^" + re.escape(root + "/"))
 
     # Collect the virtualenvs
     for filename in utils.find_files(root):
-        without_root = root_pat.sub("", filename)
-        arcname = os.path.join("/virtualenvs", name, without_root)
-        yield (filename, arcname)
+        yield (filename, filename)
     
     # Collect the libraries
     for library in utils.find_libraries(root):
