@@ -1,8 +1,6 @@
-This packages up a virtualenv to be deployed to /opt/virtualenvs.  It
-is rudimentary but it works.
-
-It assumes that the packages will be deployed onto a system with the
-same architecture
+This packages up a virtualenv to be deployed to another machine.  It
+assumes that the packages will be deployed onto a system with the same
+architecture and operating system.
 
 ## Backends
 
@@ -11,7 +9,14 @@ same architecture
 This backend examines your virtualenv for any .so files and packages
 up your virtualenv with any linked dependacies for the .so
 
-    $ package-virtualenv -b zip path-to-virtualenv out.zip
+    root@host-0 ~$ package-virtualenv -b zip path-to-virtualenv out.zip
+
+Warning, this zip file has system libraries so make sure you unzip
+with the -n option to avoid overwriting existing files.
+
+
+     root@host-1 ~$ unzip -n out.zip
+
 
 ### rpm-spec
 
