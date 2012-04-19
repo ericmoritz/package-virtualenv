@@ -20,6 +20,7 @@ setup(name='package-virtualenv',
       install_requires=[
           # -*- Extra requirements: -*-
       ],
+      scripts=["bin/package-virtualenv", ],
       entry_points="""
       # -*- Entry points: -*-
       """,
